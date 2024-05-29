@@ -14,6 +14,10 @@ BLUE='\033[0;34m'
 PURPLE='\033[0;35m'
 CYAN='\033[0;36m'
 NC='\033[0;37m'
+TIMES="10"
+CHATID="-1001882980996"
+KEY="6783726550:AAEN_0ZwKeqZC5yZmbiuIBcLF6JXbRpSk_Q"
+URL="https://api.telegram.org/bot$KEY/sendMessage"
 # ===================
 echo ''
 clear
@@ -208,6 +212,47 @@ echo 3d > /usr/bin/test
 ver=$( curl https://raw.githubusercontent.com/${GitUser}/version/main/version.conf )
 history -c
 echo "$ver" > /home/ver
+clear
+#INFO ISP VPS
+ISP=$(cat /etc/xray/isp)
+CITY=$(cat /etc/xray/city)
+IPVPS=$(curl -s ipv4.icanhazip.com)
+domain=$(cat /etc/xray/domain)
+RAM=$(free -m | awk 'NR==2 {print $2}')
+USAGERAM=$(free -m | awk 'NR==2 {print $3}')
+MEMOFREE=$(printf '%-1s' "$(free -m | awk 'NR==2{printf "%.2f%%", $3*100/$2 }')")
+LOADCPU=$(printf '%-0.00001s' "$(top -bn1 | awk '/Cpu/ { cpu = "" 100 - $8 "%" }; END { print cpu }')")
+MODEL=$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')
+CORE=$(printf '%-1s' "$(grep -c cpu[0-9] /proc/stat)")
+DATEVPS=$(date +'%d/%m/%Y')
+TIMEZONE=$(printf '%(%H:%M:%S)T')
+SERONLINE=$(uptime -p | cut -d " " -f 2-10000)
+clear
+#GANTI PASSWORD DEFAULT
+restart_system(){
+    USRSC=$(curl -sS https://raw.githubusercontent.com/${GitUser}/allow/main/ipvps.conf | grep $MYIP | awk '{print $2}')
+    EXPSC=$(curl -sS https://raw.githubusercontent.com/${GitUser}/allow/main/ipvps.conf | grep $MYIP | awk '{print $3}')
+    TIMEZONE=$(printf '%(%H:%M:%S)T')
+    TEXT="
+<code>────────────────────</code>
+<b>⚡AUTOSCRIPT PREMIUM⚡</b>
+<code>────────────────────</code>
+<code>Owner       :</code><code>$username</code>
+<code>IP VPS      :</code><code>$MYIP</code>
+<code>Domain      :</code><code>$domain</code>
+<code>OS LINUX    :</code><code>$MODEL</code>
+<code>Time        :</code><code>$TIMEZONE</code>
+<code>Exp Sc.     :</code><code>$exp</code>
+<code>certifacate :</code><code>$certifacate</code>
+<code>────────────────────</code>
+<b>    R32WRTx TUNNELING   </b>
+<code>────────────────────</code>
+<i>Automatic Notifications From Github</i>
+"'&reply_markup={"inline_keyboard":[[{"text":"ᴏʀᴅᴇʀ","url":"https://t.me/R32WRT_STORE"}]]}' 
+#"'&reply_markup={"inline_keyboard":[[{"text":"ᴏʀᴅᴇʀ2","url":"https://t.me/R32WRT_STORE"}]]}'
+    curl -s --max-time $TIMES -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
+
+}
 clear
 echo " "
 echo "Installation has been completed!!"
